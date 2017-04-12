@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import android.view.View;
 
 public class BasicMapActivity extends AppCompatActivity {
     /**
@@ -40,6 +41,9 @@ public class BasicMapActivity extends AppCompatActivity {
 
     // map fragment embedded in this activity
     private MapFragment mapFragment = null;
+
+    // Initial map scheme, initialized in onCreate() and accessed in goHome()
+    private static String initial_scheme = "";
 
     /**
      * Checks the dynamically-controlled permissions and requests missing permissions from end user.
@@ -108,6 +112,32 @@ public class BasicMapActivity extends AppCompatActivity {
         checkPermissions();
     }
 
+    // Functionality for taps of the "Go Home" button
+    public void goHome(View view) {
+        if (map != null) {
+            // Change map view to "home" coordinate and zoom level
+            map.setCenter(new GeoCoordinate(48.8000824,2.4411199, 0.0),
+                    Map.Animation.NONE);
+            map.setZoomLevel(map.getMaxZoomLevel());
+        }
+
+        // Reset the map scheme to the initial scheme
+        if (!initial_scheme.isEmpty()) {
+            map.setMapScheme(initial_scheme);
+        }
+    }
+
+    private void onMapFragmentInitializationCompleted() {
+        // retrieve a reference of the map from the map fragment
+        map = mapFragment.getMap();
+        // Set the map center coordinate to the Vancouver region (no animation)
+        map.setCenter(new GeoCoordinate(48.8000824,2.4411199, 0.0),
+                Map.Animation.NONE);
+        // Set the map zoom level to the average between min and max (no
+        // animation)
+        map.setZoomLevel(map.getMaxZoomLevel());
+    }
+
     private void initialize() {
         setContentView(R.layout.activity_main);
 
@@ -120,17 +150,42 @@ public class BasicMapActivity extends AppCompatActivity {
                     OnEngineInitListener.Error error)
             {
                 if (error == OnEngineInitListener.Error.NONE) {
-                    // retrieve a reference of the map from the map fragment
-                    map = mapFragment.getMap();
-                    // Set the map center to the Vancouver region (no animation)
-                    map.setCenter(new GeoCoordinate(48.8467892,2.3749036, 0.0),
-                            Map.Animation.NONE);
-                    // Set the zoom level to the average between min and max
-                    map.setZoomLevel(map.getMaxZoomLevel());
+                    onMapFragmentInitializationCompleted();
                 } else {
                     System.out.println("ERROR: Cannot initialize Map Fragment");
                 }
             }
         });
+    }
+
+    // Functionality for taps of the "Change Map Scheme" button
+    public void changeScheme(View view) {
+        if (map != null) {
+            // Local variable representing the current map scheme
+            String current = map.getMapScheme();
+            // Local array containing string values of available map schemes
+            List<String> schemes = map.getMapSchemes();
+            // Local variable representing the number of available map schemes
+            int total = map.getMapSchemes().size();
+
+            if (initial_scheme.isEmpty())
+            {
+                //save the initial scheme
+                initial_scheme = current;
+            }
+
+            // If the current scheme is the last element in the array, reset to
+            // the scheme at array index 0
+            if (schemes.get(total - 1).equals(current))
+                map.setMapScheme(schemes.get(0));
+            else {
+                // If the current scheme is any other element, set to the next
+                // scheme in the array
+                for (int count = 0; count < total - 1; count++) {
+                    if (schemes.get(count).equals(current))
+                        map.setMapScheme(schemes.get(count + 1));
+                }
+            }
+        }
     }
 }

@@ -6,6 +6,22 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
+    <!-- UI element declaration for "Go Home" button -->
+    <android.widget.Button
+            android:id="@+id/homebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_button_gohome"
+            android:onClick="goHome" />
+
+    <!-- UI element declaration for "Change Map Scheme" button -->
+    <android.widget.Button
+            android:id="@+id/schemebutton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_button_changescheme"
+            android:onClick="changeScheme" />
+
     <!-- Map Fragment embedded with the map object -->
     <fragment
             class="com.here.android.mpa.mapping.MapFragment"

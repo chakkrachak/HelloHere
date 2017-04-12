@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HelloHere</string>
+    <string name="label_button_gohome">Go Home</string>
+    <string name="label_button_changescheme">Change Map Scheme</string>
 </resources>
