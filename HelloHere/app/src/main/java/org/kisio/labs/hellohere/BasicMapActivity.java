@@ -1,5 +1,16 @@
 package org.kisio.labs.hellohere;
 
+import java.util.EnumSet;
+import java.util.List;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.here.android.mpa.common.GeoBoundingBox;
+import com.here.android.mpa.mapping.MapRoute;
+import com.here.android.mpa.routing.RouteManager;
+import com.here.android.mpa.routing.RouteOptions;
+import com.here.android.mpa.routing.RoutePlan;
+import com.here.android.mpa.routing.RouteResult;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
@@ -7,7 +18,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.Toast;
 import com.here.android.mpa.common.GeoCoordinate;
 import com.here.android.mpa.common.OnEngineInitListener;
 import com.here.android.mpa.mapping.Map;
@@ -15,9 +25,7 @@ import com.here.android.mpa.mapping.MapFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-import android.view.View;
 
 public class BasicMapActivity extends AppCompatActivity {
     /**
@@ -106,6 +114,12 @@ public class BasicMapActivity extends AppCompatActivity {
         }
     }
 
+    // TextView for displaying the current map scheme
+    private TextView textViewResult = null;
+
+    // MapRoute for this activity
+    private MapRoute mapRoute = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +170,9 @@ public class BasicMapActivity extends AppCompatActivity {
                 }
             }
         });
+
+        textViewResult = (TextView) findViewById(R.id.title);
+        textViewResult.setText(R.string.textview_routecoordinates_2waypoints);
     }
 
     // Functionality for taps of the "Change Map Scheme" button
@@ -188,4 +205,76 @@ public class BasicMapActivity extends AppCompatActivity {
             }
         }
     }
+
+    private RouteManager.Listener routeManagerListener =
+            new RouteManager.Listener()
+            {
+                public void onCalculateRouteFinished(RouteManager.Error errorCode,
+                                                     List<RouteResult> result) {
+
+                    if (errorCode == RouteManager.Error.NONE &&
+                            result.get(0).getRoute() != null) {
+
+                        // create a map route object and place it on the map
+                        mapRoute = new MapRoute(result.get(0).getRoute());
+                        map.addMapObject(mapRoute);
+
+                        // Get the bounding box containing the route and zoom in
+                        GeoBoundingBox gbb = result.get(0).getRoute().getBoundingBox();
+                        map.zoomTo(gbb, Map.Animation.NONE,
+                                Map.MOVE_PRESERVE_ORIENTATION);
+
+                        textViewResult.setText(
+                                String.format("Route calculated with %d maneuvers.",
+                                        result.get(0).getRoute().getManeuvers().size()));
+                    } else {
+                        textViewResult.setText(
+                                String.format("Route calculation failed: %s",
+                                        errorCode.toString()));
+                    }
+                }
+
+                public void onProgress(int percentage) {
+                    textViewResult.setText(
+                            String.format("... %d percent done ...", percentage));
+                }
+            };
+
+    // Functionality for taps of the "Get Directions" button
+    public void getDirections(View view) {
+        // 1. clear previous results
+        textViewResult.setText("");
+        if (map != null && mapRoute != null) {
+            map.removeMapObject(mapRoute);
+            mapRoute = null;
+        }
+
+        // 2. Initialize RouteManager
+        RouteManager routeManager = new RouteManager();
+
+        // 3. Select routing options via RoutingMode
+        RoutePlan routePlan = new RoutePlan();
+
+        RouteOptions routeOptions = new RouteOptions();
+        routeOptions.setTransportMode(RouteOptions.TransportMode.CAR);
+        routeOptions.setRouteType(RouteOptions.Type.FASTEST);
+        routePlan.setRouteOptions(routeOptions);
+
+        // 4. Select Waypoints for your routes
+        // START: Burnaby
+        routePlan.addWaypoint(new GeoCoordinate(48.8000824,2.4411199));
+
+        // END: YVR Airport
+        routePlan.addWaypoint(new GeoCoordinate(48.8467892,2.3749036));
+
+        // 5. Retrieve Routing information via RouteManagerListener
+        RouteManager.Error error =
+                routeManager.calculateRoute(routePlan, routeManagerListener);
+        if (error != RouteManager.Error.NONE) {
+            Toast.makeText(getApplicationContext(),
+                    "Route calculation failed with: " + error.toString(),
+                    Toast.LENGTH_SHORT)
+                    .show();
+        }
+    };
 }
