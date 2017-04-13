@@ -15,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        NMAApplicationContext.set(appId: "5ruGBkmkauQY3Esme01Y", appCode: "pZ5ynMnn1m_tMdEUYW3_2w")
+
         return true
     }
 

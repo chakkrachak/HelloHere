@@ -36,6 +36,7 @@
 		FEA2E9991E9FA2AB00080ABA /* libz.1.2.5.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.1.2.5.tbd; path = usr/lib/libz.1.2.5.tbd; sourceTree = SDKROOT; };
 		FEA2E99B1E9FA2B500080ABA /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		FEA2E99D1E9FA2BF00080ABA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FEA2E99F1E9FA6D100080ABA /* HelloHereSwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloHereSwift.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +81,7 @@
 				FEA2E97C1E9E793900080ABA /* AppDelegate.swift */,
 				FEA2E97E1E9E793900080ABA /* ViewController.swift */,
 				FEA2E9801E9E793900080ABA /* Main.storyboard */,
+				FEA2E99F1E9FA6D100080ABA /* HelloHereSwift.h */,
 				FEA2E9831E9E793900080ABA /* Assets.xcassets */,
 				FEA2E9851E9E793900080ABA /* LaunchScreen.storyboard */,
 				FEA2E9881E9E793900080ABA /* Info.plist */,
@@ -246,6 +248,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/HelloHereSwift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -288,6 +291,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/HelloHereSwift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -307,6 +311,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.kisio.labs.HelloHereSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/HelloHereSwift.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -325,6 +330,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = org.kisio.labs.HelloHereSwift;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/$(PROJECT_NAME)/HelloHereSwift.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
